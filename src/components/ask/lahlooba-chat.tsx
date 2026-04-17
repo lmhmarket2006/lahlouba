@@ -12,7 +12,7 @@ import { useChatStore } from "@/stores/chat-store";
 
 type Status = "idle" | "loading" | "error";
 
-async function callGemini(messages: { role: "user" | "assistant"; content: string }[]) {
+async function callAssistant(messages: { role: "user" | "assistant"; content: string }[]) {
   const res = await fetch("/api/gemini", {
     method: "POST",
     headers: { "Content-Type": "application/json" },
@@ -39,7 +39,7 @@ export function LahloobaChat() {
   const canSend = useMemo(() => input.trim().length > 0 && status !== "loading", [input, status]);
 
   const runModel = async (history: { role: "user" | "assistant"; content: string }[]) => {
-    const text = await callGemini(history);
+    const text = await callAssistant(history);
     if (!text) {
       throw new Error("لم يصل رد من المساعد. جرّبي مرة أخرى.");
     }
