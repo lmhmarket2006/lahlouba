@@ -8,14 +8,15 @@ import { Card } from "@/components/ui/card";
 import { CONTENT } from "@/data/content";
 import { useContentFavoritesStore } from "@/stores/content-favorites-store";
 import { useRadioStore } from "@/stores/radio-store";
+import type { ContentItem } from "@/types/content";
 
-export function FavoritesView() {
+export function FavoritesView({ content = CONTENT }: { content?: ContentItem[] }) {
   const ids = useContentFavoritesStore((s) => s.ids);
   const toggle = useContentFavoritesStore((s) => s.toggle);
   const favoriteStations = useRadioStore((s) => s.favoriteStations);
   const toggleFavoriteStation = useRadioStore((s) => s.toggleFavoriteStation);
 
-  const items = CONTENT.filter((c) => ids.includes(c.id));
+  const items = content.filter((c) => ids.includes(c.id));
 
   return (
     <div className="space-y-8">
