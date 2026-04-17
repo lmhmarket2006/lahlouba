@@ -12,9 +12,9 @@ export type ChatMessage = {
 
 type ChatState = {
   messages: ChatMessage[];
-  appendUser: (text: string) => string;
-  appendAssistant: (id: string, text: string) => void;
-  updateAssistant: (id: string, text: string) => void;
+  appendUser: (text: string) => void;
+  appendAssistant: (text: string) => void;
+  setMessages: (messages: ChatMessage[]) => void;
   clear: () => void;
 };
 
@@ -22,21 +22,21 @@ export const useChatStore = create<ChatState>()(
   persist(
     (set) => ({
       messages: [],
-      appendUser: (text) => {
-        const id = crypto.randomUUID();
+      appendUser: (text) =>
         set((s) => ({
-          messages: [...s.messages, { id, role: "user", content: text, createdAt: Date.now() }],
-        }));
-        return id;
-      },
-      appendAssistant: (id, text) =>
-        set((s) => ({
-          messages: [...s.messages, { id, role: "assistant", content: text, createdAt: Date.now() }],
+          messages: [
+            ...s.messages,
+            { id: crypto.randomUUID(), role: "user", content: text, createdAt: Date.now() },
+          ],
         })),
-      updateAssistant: (id, text) =>
+      appendAssistant: (text) =>
         set((s) => ({
-          messages: s.messages.map((m) => (m.id === id ? { ...m, content: text } : m)),
+          messages: [
+            ...s.messages,
+            { id: crypto.randomUUID(), role: "assistant", content: text, createdAt: Date.now() },
+          ],
         })),
+      setMessages: (messages) => set({ messages }),
       clear: () => set({ messages: [] }),
     }),
     { name: "lahlooba-chat" },
