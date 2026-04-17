@@ -6,20 +6,22 @@ import { PostSaveButton } from "@/components/post/post-actions";
 import { ShareRow } from "@/components/post/share-row";
 import { ContentCard } from "@/components/content/content-card";
 import { Button } from "@/components/ui/button";
-import { CONTENT, getContentBySlug } from "@/data/content";
 import { SITE_NAME } from "@/lib/constants";
+import { getContentCatalog } from "@/lib/sanity";
 import { getSiteUrl } from "@/lib/site-url";
 import { badgeMeta } from "@/lib/badge-label";
 
 type Props = { params: Promise<{ slug: string }> };
 
 export async function generateStaticParams() {
-  return CONTENT.map((c) => ({ slug: c.slug }));
+  const content = await getContentCatalog();
+  return content.map((c) => ({ slug: c.slug }));
 }
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
+  const content = await getContentCatalog();
   const { slug } = await params;
-  const item = getContentBySlug(slug);
+  const item = content.find((x) => x.slug === slug);
   if (!item) return { title: "غير موجود" };
   return {
     title: item.title,
@@ -35,11 +37,12 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 }
 
 export default async function PostPage({ params }: Props) {
+  const content = await getContentCatalog();
   const { slug } = await params;
-  const item = getContentBySlug(slug);
+  const item = content.find((x) => x.slug === slug);
   if (!item) notFound();
 
-  const related = CONTENT.filter((c) => c.category === item.category && c.id !== item.id).slice(0, 3);
+  const related = content.filter((c) => c.category === item.category && c.id !== item.id).slice(0, 3);
   const url = `${getSiteUrl()}/post/${item.slug}`;
 
   const jsonLd = {
