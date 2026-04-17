@@ -7,51 +7,48 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { CONTENT } from "@/data/content";
 import { useStationsQuery } from "@/hooks/use-stations-query";
+import { CONTENT } from "@/data/content";
 import { useRecentSearchesStore } from "@/stores/recent-searches-store";
 import type { ContentItem } from "@/types/content";
 
 type Tab = "all" | "recipes" | "articles" | "tips" | "stations" | "trend";
 
-function filterContent(tab: Tab, q: string): ContentItem[] {
-  const t = q.trim().toLowerCase();
-  const base = CONTENT.filter((c) => {
-    if (!t) return true;
-    return (
-      c.title.toLowerCase().includes(t) ||
-      c.excerpt.toLowerCase().includes(t) ||
-      (c.subcategory?.toLowerCase().includes(t) ?? false)
-    );
-  });
-  if (tab === "all" || tab === "trend") {
-    if (tab === "trend") return base.filter((c) => c.category === "trend" || c.badges?.includes("hot"));
-    return base;
-  }
-  if (tab === "recipes") return base.filter((c) => c.kind === "recipe");
-  if (tab === "articles") return base.filter((c) => c.kind === "article");
-  if (tab === "tips") return base.filter((c) => c.kind === "tip");
-  return base;
-}
-
 export function SearchPanel({
   onClose,
   autoFocus,
+  content = CONTENT,
 }: {
   onClose?: () => void;
   autoFocus?: boolean;
+  content?: ContentItem[];
 }) {
   const [tab, setTab] = useState<Tab>("all");
   const [q, setQ] = useState("");
   const pushRecent = useRecentSearchesStore((s) => s.push);
   const recent = useRecentSearchesStore((s) => s.items);
 
-  const contentResults = useMemo(() => filterContent(tab, q), [tab, q]);
+  const contentResults = useMemo(() => {
+    const t = q.trim().toLowerCase();
+    const base = content.filter((c) => {
+      if (!t) return true;
+      return (
+        c.title.toLowerCase().includes(t) ||
+        c.excerpt.toLowerCase().includes(t) ||
+        (c.subcategory?.toLowerCase().includes(t) ?? false)
+      );
+    });
+    if (tab === "trend") return base.filter((c) => c.category === "trend" || c.badges?.includes("hot"));
+    if (tab === "recipes") return base.filter((c) => c.kind === "recipe");
+    if (tab === "articles") return base.filter((c) => c.kind === "article");
+    if (tab === "tips") return base.filter((c) => c.kind === "tip");
+    return base;
+  }, [content, q, tab]);
 
   const stationQuery = q.trim().length >= 2 ? q.trim() : "relax";
   const { data: stationsData, isFetching } = useStationsQuery({ q: stationQuery }, tab === "stations");
 
-  const suggested = useMemo(() => CONTENT.filter((c) => c.badges?.includes("editor")).slice(0, 4), []);
+  const suggested = useMemo(() => content.filter((c) => c.badges?.includes("editor")).slice(0, 4), [content]);
 
   return (
     <div className="space-y-4">

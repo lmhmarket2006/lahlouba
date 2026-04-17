@@ -18,8 +18,8 @@ import { useMemo, useState } from "react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { CATEGORY_META } from "@/data/category-meta";
-import { getContentByCategory } from "@/data/content";
 import { cn } from "@/lib/utils";
+import type { ContentItem } from "@/types/content";
 
 const iconMap = {
   ChefHat,
@@ -35,7 +35,7 @@ const iconMap = {
   Flame,
 } as const;
 
-export function CategoriesView() {
+export function CategoriesView({ content }: { content: ContentItem[] }) {
   const [q, setQ] = useState("");
   const filtered = useMemo(() => {
     const t = q.trim().toLowerCase();
@@ -59,7 +59,7 @@ export function CategoriesView() {
       <div className="grid gap-4 md:grid-cols-2">
         {filtered.map((cat) => {
           const Icon = iconMap[cat.icon as keyof typeof iconMap] ?? Sparkles;
-          const count = getContentByCategory(cat.id).length;
+          const count = content.filter((x) => x.category === cat.id).length;
           return (
             <Card key={cat.id} id={cat.id} className="overflow-hidden border-border/70 transition hover:shadow-md">
               <CardHeader className="space-y-3">
