@@ -10,11 +10,11 @@ export const CATEGORY_OPTIONS = [
   { title: "الأبراج", value: "horoscope" },
   { title: "أخبار المسلسلات", value: "series" },
   { title: "الترند", value: "trend" },
-] as const;
+];
 
 export const BADGE_OPTIONS = [
   { title: "جديد", value: "new" },
   { title: "رائج الآن", value: "hot" },
   { title: "مختار لكِ", value: "editor" },
   { title: "الأكثر متابعة", value: "trending" },
-] as const;
+];
