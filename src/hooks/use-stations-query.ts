@@ -17,14 +17,18 @@ export function stationsQueryKey(opts: {
   return ["stations", opts.q ?? "", opts.tag ?? "", opts.language ?? "", opts.country ?? ""] as const;
 }
 
-export function useStationsQuery(opts: {
-  q?: string;
-  tag?: string;
-  language?: string;
-  country?: string;
-}) {
+export function useStationsQuery(
+  opts: {
+    q?: string;
+    tag?: string;
+    language?: string;
+    country?: string;
+  },
+  enabled: boolean = true,
+) {
   return useQuery({
     queryKey: stationsQueryKey(opts),
+    enabled,
     queryFn: async (): Promise<StationsResponse> => {
       const p = new URLSearchParams();
       if (opts.q) p.set("q", opts.q);

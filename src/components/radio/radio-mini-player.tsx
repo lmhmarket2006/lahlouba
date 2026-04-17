@@ -18,8 +18,8 @@ export function RadioMiniPlayer() {
   const setVolume = useRadioStore((s) => s.setVolume);
   const next = useRadioStore((s) => s.next);
   const prev = useRadioStore((s) => s.prev);
-  const toggleFavorite = useRadioStore((s) => s.toggleFavorite);
-  const isFavorite = useRadioStore((s) => s.isFavorite);
+  const toggleFavoriteStation = useRadioStore((s) => s.toggleFavoriteStation);
+  const isFavoriteStation = useRadioStore((s) => s.isFavoriteStation);
   const clearError = useRadioStore((s) => s.clearError);
   const [expanded, setExpanded] = useState(false);
   const [isMd, setIsMd] = useState(false);
@@ -94,9 +94,9 @@ export function RadioMiniPlayer() {
               className="h-9 w-9"
               type="button"
               aria-label="مفضلة"
-              onClick={() => toggleFavorite(current.stationuuid)}
+              onClick={() => toggleFavoriteStation(current)}
             >
-              <Heart className={cn("h-4 w-4", isFavorite(current.stationuuid) && "fill-rose text-rose")} />
+              <Heart className={cn("h-4 w-4", isFavoriteStation(current.stationuuid) && "fill-rose text-rose")} />
             </Button>
           ) : null}
         </div>

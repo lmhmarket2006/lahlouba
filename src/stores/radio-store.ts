@@ -8,7 +8,7 @@ type RadioState = {
   current: RadioStation | null;
   isPlaying: boolean;
   volume: number;
-  favoriteUuids: string[];
+  favoriteStations: RadioStation[];
   lastNonEmpty: RadioStation | null;
   queue: RadioStation[];
   queueIndex: number;
@@ -17,8 +17,8 @@ type RadioState = {
   playStationInQueue: (stations: RadioStation[], index: number) => void;
   setPlaying: (v: boolean) => void;
   setVolume: (v: number) => void;
-  toggleFavorite: (uuid: string) => void;
-  isFavorite: (uuid: string) => boolean;
+  toggleFavoriteStation: (station: RadioStation) => void;
+  isFavoriteStation: (uuid: string) => boolean;
   next: () => void;
   prev: () => void;
   clearError: () => void;
@@ -30,7 +30,7 @@ export const useRadioStore = create<RadioState>()(
       current: null,
       isPlaying: false,
       volume: 0.85,
-      favoriteUuids: [],
+      favoriteStations: [],
       lastNonEmpty: null,
       queue: [],
       queueIndex: 0,
@@ -55,16 +55,16 @@ export const useRadioStore = create<RadioState>()(
       },
       setPlaying: (v) => set({ isPlaying: v }),
       setVolume: (v) => set({ volume: Math.min(1, Math.max(0, v)) }),
-      toggleFavorite: (uuid) =>
+      toggleFavoriteStation: (station) =>
         set((state) => {
-          const exists = state.favoriteUuids.includes(uuid);
+          const exists = state.favoriteStations.some((s) => s.stationuuid === station.stationuuid);
           return {
-            favoriteUuids: exists
-              ? state.favoriteUuids.filter((x) => x !== uuid)
-              : [...state.favoriteUuids, uuid],
+            favoriteStations: exists
+              ? state.favoriteStations.filter((s) => s.stationuuid !== station.stationuuid)
+              : [...state.favoriteStations, station],
           };
         }),
-      isFavorite: (uuid) => get().favoriteUuids.includes(uuid),
+      isFavoriteStation: (uuid) => get().favoriteStations.some((s) => s.stationuuid === uuid),
       next: () => {
         const { queue, queueIndex } = get();
         if (!queue.length) return;
