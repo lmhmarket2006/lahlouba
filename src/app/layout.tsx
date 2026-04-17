@@ -8,7 +8,7 @@ import { getSiteUrl } from "@/lib/site-url";
 const tajawal = Tajawal({
   subsets: ["arabic"],
   variable: "--font-tajawal",
-  weight: ["300", "400", "500", "600", "700", "800"],
+  weight: ["300", "400", "500", "700", "800"],
 });
 
 export const metadata: Metadata = {
