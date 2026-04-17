@@ -34,7 +34,7 @@ export function SiteHeader() {
                 <Menu className="h-5 w-5" />
               </Button>
             </SheetTrigger>
-            <SheetContent side="right" className="w-[min(92vw,360px)]">
+            <SheetContent className="w-[min(92vw,360px)]">
               <SheetHeader>
                 <SheetTitle className="text-start text-plum">{SITE_NAME}</SheetTitle>
               </SheetHeader>
