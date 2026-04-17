@@ -8,10 +8,9 @@ import { ContentCard } from "@/components/content/content-card";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
-import { CONTENT, featuredHome, lahloobaPicks, mostRead } from "@/data/content";
 import { LISTENING_HIGHLIGHTS } from "@/data/listening-mock";
 import { SITE_NAME } from "@/lib/constants";
-import type { ContentCategory } from "@/types/content";
+import type { ContentCategory, ContentItem } from "@/types/content";
 
 const SECTIONS: { id: ContentCategory; title: string; subtitle: string }[] = [
   { id: "recipes", title: "أحدث الوصفات", subtitle: "لمسة مطبخ هادئة ومريحة" },
@@ -27,14 +26,20 @@ const SECTIONS: { id: ContentCategory; title: string; subtitle: string }[] = [
   { id: "trend", title: "الترند الآن", subtitle: "ما يتداول بسرعة" },
 ];
 
-function pickCategoryItems(id: ContentCategory, limit = 3) {
-  return CONTENT.filter((c) => c.category === id).slice(0, limit);
+function pickCategoryItems(content: ContentItem[], id: ContentCategory, limit = 3) {
+  return content.filter((c) => c.category === id).slice(0, limit);
 }
 
-export function HomeView() {
-  const featured = useMemo(() => featuredHome(), []);
-  const picks = useMemo(() => lahloobaPicks(), []);
-  const reads = useMemo(() => mostRead(), []);
+export function HomeView({ content }: { content: ContentItem[] }) {
+  const featured = useMemo(
+    () =>
+      content
+        .filter((c) => c.badges?.includes("hot") || c.badges?.includes("new"))
+        .slice(0, 5),
+    [content],
+  );
+  const picks = useMemo(() => content.filter((c) => c.badges?.includes("editor")).slice(0, 6), [content]);
+  const reads = useMemo(() => [...content].sort((a, b) => b.readMinutes - a.readMinutes).slice(0, 4), [content]);
   const [newsletter, setNewsletter] = useState("");
   const [sent, setSent] = useState(false);
 
@@ -129,7 +134,7 @@ export function HomeView() {
       </section>
 
       {SECTIONS.map((sec, idx) => {
-        const items = pickCategoryItems(sec.id, 3);
+        const items = pickCategoryItems(content, sec.id, 3);
         if (!items.length) return null;
         return (
           <section key={sec.id} className="space-y-4">
