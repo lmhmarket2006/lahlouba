@@ -1,14 +1,15 @@
 import type { Metadata } from "next";
 import { ContentCard } from "@/components/content/content-card";
-import { lahloobaPicks } from "@/data/content";
+import { getContentCatalog } from "@/lib/sanity";
 
 export const metadata: Metadata = {
   title: "اختيارات لهلوبة",
   description: "أفضل الوصفات والنصائح واللمسات التي ننصح بها اليوم — بذوق هادئ.",
 };
 
-export default function PicksPage() {
-  const picks = lahloobaPicks();
+export default async function PicksPage() {
+  const content = await getContentCatalog();
+  const picks = content.filter((c) => c.badges?.includes("editor")).slice(0, 12);
   return (
     <div className="space-y-6">
       <div>
