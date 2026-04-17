@@ -48,7 +48,10 @@ export default function RootLayout({
 
   return (
     <html lang="ar" dir="rtl" className={`${tajawal.variable} h-full`}>
-      <body className="min-h-full bg-background font-sans text-foreground">
+      <body
+        suppressHydrationWarning
+        className="min-h-full bg-background font-sans text-foreground"
+      >
         <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }} />
         <AppProviders>{children}</AppProviders>
       </body>
