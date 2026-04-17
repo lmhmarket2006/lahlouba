@@ -1,11 +1,13 @@
+"use client";
+
+import { NextStudio } from "next-sanity/studio";
 import config from "../../../../sanity.config";
-import { StudioClient } from "./studio-client";
 
 export const dynamic = "force-static";
 
 export default function StudioPage() {
-  const projectId = process.env.NEXT_PUBLIC_SANITY_PROJECT_ID || process.env.SANITY_PROJECT_ID;
-  const dataset = process.env.NEXT_PUBLIC_SANITY_DATASET || process.env.SANITY_DATASET;
+  const projectId = process.env.NEXT_PUBLIC_SANITY_PROJECT_ID;
+  const dataset = process.env.NEXT_PUBLIC_SANITY_DATASET;
 
   if (!projectId || !dataset) {
     return (
@@ -35,5 +37,5 @@ export default function StudioPage() {
     );
   }
 
-  return <StudioClient config={config} />;
+  return <NextStudio config={config} />;
 }
